@@ -43,9 +43,28 @@ async function run() {
         // get a coffee
         app.get('/coffee/:id', async (req, res) => {
             const id = req.params.id
-            console.log(id);
             const query = { _id: new ObjectId(id) }
             const result = await coffeeCollection.findOne(query)
+            res.send(result)
+        })
+
+        app.put('/coffee/:id', async (req, res) => {
+            const id = req.params.id
+            const coffee = req.body;
+            const query = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedCoffee = {
+                $set: {
+                    name: coffee.name,
+                    chef: coffee.chef,
+                    supplier: coffee.supplier,
+                    taste: coffee.taste,
+                    category: coffee.category,
+                    details: coffee.details,
+                    photo: coffee.photo,
+                }
+            }
+            const result = await coffeeCollection.updateOne(query, updatedCoffee, options)
             res.send(result)
         })
 
